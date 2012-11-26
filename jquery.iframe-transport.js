@@ -90,6 +90,7 @@
 // ## Annotated Source
 
 
+
   // Register a prefilter that checks whether the `iframe` option is set, and
   // switches to the "iframe" data type if it is `true`.
   $.ajaxPrefilter(function(options, origOptions, jqXHR) {
@@ -106,15 +107,18 @@
         iframe = null,
         name = "iframe-" + $.now(),
         files = $(options.files).filter(":file:enabled"),
+        hasFiles = files.length > 0,
         markers = null;
 
     // This function gets called after a successful submission or an abortion
     // and should revert all changes made to the page to enable the
     // submission via this transport.
     function cleanUp() {
-      markers.replaceWith(function(idx) {
-        return files.get(idx);
-      });
+      if (hasFiles) {
+        markers.replaceWith(function(idx) {
+          return files.get(idx);
+        });
+      }
       form.remove();
       iframe.attr("src", "javascript:false;").remove();
     }
@@ -124,7 +128,6 @@
     // (unsupported) conversion from "iframe" to the actual type.
     options.dataTypes.shift();
 
-    if (files.length) {
       form = $("<form enctype='multipart/form-data' method='post'></form>").
         hide().attr({action: options.url, target: name});
 
@@ -154,10 +157,12 @@
       // original locations in the document by replacing them with disabled
       // clones. This should also avoid introducing unwanted changes to the
       // page layout during submission.
-      markers = files.after(function(idx) {
-        return $(this).clone().prop("disabled", true);
-      }).next();
-      files.appendTo(form);
+      if (hasFiles) {
+        markers = files.after(function(idx) {
+          return $(this).clone().prop("disabled", true);
+        }).next();
+        files.appendTo(form);
+      }
 
       return {
 
@@ -215,5 +220,5 @@
         }
 
       };
-    }
   });
+
