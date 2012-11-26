@@ -89,8 +89,6 @@
 
 // ## Annotated Source
 
-(function($, undefined) {
-  "use strict";
 
   // Register a prefilter that checks whether the `iframe` option is set, and
   // switches to the "iframe" data type if it is `true`.
@@ -219,5 +217,3 @@
       };
     }
   });
-
-})(jQuery);
