@@ -143,9 +143,18 @@
           name = value.name;
           value = value.value;
         }
-        $("<input type='hidden' />").attr({name:  name, value: value}).
-          appendTo(form);
+
+        if (!$.isArray(value)) {
+          value = [value];
+        }
+
+        $.each(value, function(i, value){
+          $("<input type='hidden' />").attr({name:  name, value: value}).
+            appendTo(form);
+        });
+
       });
+
 
       // Add a hidden `X-Requested-With` field with the value `IFrame` to the
       // field, to help server-side code to determine that the upload happened
